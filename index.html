@@ -5,39 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>我们的世界足迹｜GO-Travel</title>
     <style>
-        :root { --primary: #3AA1FF; --bg: linear-gradient(135deg, #F0F4F8 0%, #E2E8F0 100%); --card: rgba(255, 255, 255, 0.85); --text: #2D3748; --side-w: 90px; }
+        :root {
+            --primary-color: #3AA1FF; 
+            --accent-color: #FFDE00;  
+            --bg-gradient: linear-gradient(135deg, #F0F4F8 0%, #E2E8F0 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #2D3748;
+            --text-muted: #A0AEC0;
+            --sidebar-width: 100px;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden; }
-        .sidebar { width: var(--side-w); background: rgba(255,255,255,0.65); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-right: 1px solid rgba(255,255,255,0.5); position: fixed; top:0; bottom:0; left:0; display:flex; flex-direction:column; padding:10px 0; z-index:100; overflow-y:auto; }
-        .menu-item { padding: 16px 5px; font-size: 14px; font-weight: 700; color: #718096; cursor: pointer; transition: all 0.2s; border-left: 4px solid transparent; text-align: center; }
-        .menu-item:hover, .menu-item.active { color: var(--primary); background: rgba(58,161,255,0.08); border-left-color: var(--primary); }
-        .main-content { padding-left: calc(var(--side-w) + 20px); flex-grow: 1; padding-top: 30px; padding-right: 20px; padding-bottom: 40px; }
-        header h1 { font-size: 24px; font-weight: 800; margin-bottom: 16px; }
-        .progress-container { background: var(--card); padding: 14px 16px; border-radius: 16px; box-shadow: 0 4px 12px rgba(148,163,184,0.06); border: 1px solid rgba(255,255,255,0.6); margin-bottom: 25px; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background: var(--bg-gradient); 
+            color: var(--text-main); 
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 🗺️ 左侧大洲侧边栏：手机端完美贴合左侧 */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 10px 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            padding: 16px 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #718096;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            color: var(--primary-color);
+            background: rgba(58, 161, 255, 0.08);
+            border-left-color: var(--primary-color);
+        }
+
+        /* 🏛️ 右侧打卡主体区 */
+        .main-content {
+            padding-left: calc(var(--sidebar-width) + 20px);
+            flex-grow: 1;
+            padding-top: 30px;
+            padding-right: 20px;
+            padding-bottom: 40px;
+            max-width: 100%;
+        }
+
+        header h1 { 
+            font-size: 24px; 
+            font-weight: 800; 
+            margin-bottom: 16px; 
+            color: #1A202C;
+        }
+
+        /* 📊 全球足迹进度控制条 */
+        .progress-container {
+            background: var(--card-bg);
+            padding: 14px 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(148, 163, 184, 0.06);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
         .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; font-weight: 700;}
         .progress-bar { width: 100%; background: #E2E8F0; height: 10px; border-radius: 99px; overflow: hidden; }
-        .progress { height: 100%; background: linear-gradient(90deg, var(--primary) 0%, #63B3ED 100%); width: 0%; border-radius: 99px; transition: width 0.4s ease; }
+        .progress { height: 100%; background: linear-gradient(90deg, var(--primary-color) 0%, #63B3ED 100%); width: 0%; border-radius: 99px; transition: width 0.4s ease; }
+
+        /* 分组布局 */
         .geo-group { margin-bottom: 30px; }
         .country-title { font-size: 18px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;}
-        .country-title::before { content: '📍'; }
-        .attraction-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
-        .attraction-card { background: var(--card); border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.7); cursor: pointer; transition: all 0.25s; position: relative; }
-        .attraction-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(148,163,184,0.12); }
-        .card-banner { height: 120px; width: 100%; background: linear-gradient(45deg, #3AA1FF, #E2E8F0); background-size: cover; background-position: center; position: relative; }
-        .city-badge { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); color: white; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
-        .card-body { padding: 14px; display: flex; align-items: center; justify-content: space-between; }
-        .attraction-name { font-size: 14px; font-weight: 700; line-height: 1.3;}
-        .checkbox-circle { width: 22px; height: 22px; border: 2px solid #CBD5E1; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #fff; flex-shrink: 0; }
-        .attraction-card.done .checkbox-circle { background: var(--primary); border-color: var(--primary); }
-        .checkbox-circle::after { content: ''; width: 4px; height: 8px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); display: none; margin-top: -2px; }
+        .country-title::before { content: '📍'; font-size: 14px; }
+        
+        /* 网格卡片系统 */
+        .attraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .attraction-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(148, 163, 184, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .attraction-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(148, 163, 184, 0.12);
+        }
+
+        .card-banner {
+            height: 120px;
+            width: 100%;
+            background: linear-gradient(45deg, #3AA1FF, #E2E8F0);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .city-badge {
+            position: absolute;
+            bottom: 10px; left: 10px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: white; padding: 3px 8px;
+            border-radius: 6px; font-size: 11px; font-weight: 700;
+        }
+
+        .card-body {
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .attraction-name { font-size: 14px; font-weight: 700; color: var(--text-main); line-height: 1.3;}
+
+        /* 圆形勾选框 */
+        .checkbox-circle {
+            width: 22px; height: 22px;
+            border: 2px solid #CBD5E1;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+            background: #fff;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+        .attraction-card.done .checkbox-circle {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .checkbox-circle::after {
+            content: ''; width: 4px; height: 8px;
+            border: solid white; border-width: 0 2px 2px 0;
+            transform: rotate(45deg); display: none; margin-top: -2px;
+        }
         .attraction-card.done .checkbox-circle::after { display: block; }
         .attraction-card.done .card-banner { filter: grayscale(0.5); opacity: 0.6; }
-        .attraction-card.done .attraction-name { text-decoration: line-through; color: #A0AEC0; }
-        .loading { text-align: center; font-size: 14px; font-weight: 600; color: #A0AEC0; padding: 80px 0; }
-        @media(max-width: 600px) { .main-content { padding-left: calc(var(--side-w) + 15px); padding-right: 10px; } .attraction-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; } .card-banner { height: 95px; } }
+        .attraction-card.done .attraction-name { text-decoration: line-through; color: var(--text-muted); }
+
+        .loading { text-align: center; font-size: 14px; font-weight: 600; color: var(--text-muted); padding: 80px 0; }
+        
+        @media(max-width: 600px) {
+            .sidebar { width: 85px; }
+            .menu-item { font-size: 13px; padding: 14px 4px; }
+            .main-content { padding-left: 105px; padding-top: 20px; padding-right: 12px; }
+            header h1 { font-size: 20px; margin-bottom: 12px; }
+            .attraction-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+            .card-banner { height: 95px; }
+        }
     </style>
 </head>
 <body>
+
     <div class="sidebar">
         <div class="menu-item active" onclick="switchContinent('亚洲')">亚洲</div>
         <div class="menu-item" onclick="switchContinent('欧洲')">欧洲</div>
@@ -47,68 +194,71 @@
         <div class="menu-item" onclick="switchContinent('非洲')">非洲</div>
         <div class="menu-item" onclick="switchContinent('南极洲')">南极洲</div>
     </div>
+
     <div class="main-content">
-        <header><h1 id="mainTitle">亚洲 ｜ 我们的足迹</h1></header>
+        <header>
+            <!-- 🏷️ 正确改回具有 GO 风格专属基因的浪漫大标题 -->
+            <h1 id="mainTitle">我们的世界足迹｜GO-Travel</h1>
+        </header>
+
         <div class="progress-container">
-            <div class="progress-header"><span>全球足迹打卡进度</span><span id="progressText">0 / 0</span></div>
+            <div class="progress-header">
+                <span>全球足迹打卡进度</span>
+                <span id="progressText">0 / 0</span>
+            </div>
             <div class="progress-bar"><div class="progress" id="progress"></div></div>
         </div>
+
         <div id="loading" class="loading">正在同步 GO-Travel Database...</div>
         <div id="listsContainer"></div>
     </div>
+
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxsdzsQLz8PhLK3ewhR4gT22D4oMW9wrA5vBf-uYiNSZFD9CkofiAtSktiRrcScGOY/exec'; 
-        let rawData = [], currentCont = '亚洲';
+        const API_URL = 'https://google.com'; 
+
+        let rawTravelData = [];
+        let currentContinent = '亚洲';
+
         async function fetchTravelData() {
             try {
-                const res = await fetch(API_URL);
-                const txt = await res.text();
-                rawData = JSON.parse(txt);
-                if (Array.isArray(rawData)) {
+                const response = await fetch(API_URL);
+                const textData = await response.text();
+                rawTravelData = JSON.parse(textData);
+                
+                if (Array.isArray(rawTravelData)) {
                     document.getElementById('loading').style.display = 'none';
-                    updateProgress(); render();
+                    updateGlobalProgress();
+                    renderContent();
                 }
-            } catch (e) {
-                console.error(e);
-                document.getElementById('loading').innerText = '数据读取异常，请确认表格左下角标签名为 Travel。';
+            } catch (error) {
+                document.getElementById('loading').innerText = '数据解析异常，请确认表格左下角标签名为 Travel。';
+                console.error("解析错误：", error);
             }
         }
-        function updateProgress() {
-            const total = rawData.length, done = rawData.filter(i => i.completed).length;
-            document.getElementById('progressText').innerText = `${done} / ${total}`;
-            document.getElementById('progress').style.width = total > 0 ? `${(done / total) * 100}%` : '0%';
+
+        function updateGlobalProgress() {
+            const total = rawTravelData.length;
+            const completed = rawTravelData.filter(item => item.completed).length;
+            document.getElementById('progressText').innerText = `${completed} / ${total}`;
+            const percent = total > 0 ? (completed / total) * 100 : 0;
+            document.getElementById('progress').style.width = `${percent}%`;
         }
-        function switchContinent(name) {
-            currentCont = name; document.getElementById('mainTitle').innerText = `${name} ｜ 我们的足迹`;
-            document.querySelectorAll('.menu-item').forEach(el => el.classList.toggle('active', el.innerText === name));
-            render();
+
+        function switchContinent(continentName) {
+            currentContinent = continentName;
+            // 🛠️ 联动改动：大标题保持 GO-Travel 核心，副标题对应右侧具体大洲内容
+            document.getElementById('mainTitle').innerText = `我们的世界足迹｜${continentName}`;
+            document.querySelectorAll('.menu-item').forEach(el => {
+                el.classList.toggle('active', el.innerText === continentName);
+            });
+            renderContent();
         }
-        function render() {
-            const container = document.getElementById('listsContainer'); container.innerHTML = '';
-            const list = rawData.filter(item => String(item.continent).trim() === currentCont);
-            if(list.length === 0) { container.innerHTML = `<div class="loading">✈️ 暂无 ${currentCont} 的旅行足迹。</div>`; return; }
-            const groups = {}; list.forEach(item => { const c = item.country || '其他国家'; if(!groups[c]) groups[c] = []; groups[c].push(item); });
-            for (const country in groups) {
-                const group = document.createElement('div'); group.className = 'geo-group';
-                group.innerHTML = `<div class="country-title">${country}</div>`;
-                const grid = document.createElement('div'); grid.className = 'attraction-grid';
-                groups[country].forEach(item => {
-                    const card = document.createElement('div'); card.className = `attraction-card ${item.completed ? 'done' : ''}`;
-                    card.onclick = () => toggle(item.id, !item.completed);
-                    card.innerHTML = `<div class="card-banner" style="${item.image ? `background-image:url('${item.image}')`:''}">
-                        <span class="city-badge">${item.city || ''}</span></div><div class="card-body">
-                        <span class="attraction-name">${item.attraction || ''}</span><div class="checkbox-circle"></div></div>`;
-                    grid.appendChild(card);
-                });
-                group.appendChild(grid); container.appendChild(group);
-            }
-        }
-        async function toggle(id, state) {
-            const target = rawData.find(i => i.id === id); if(target) target.completed = state;
-            updateProgress(); render();
-            try { await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, completed: state }) }); } catch (e) { console.error(e); }
-        }
-        fetchTravelData();
-    </script>
-</body>
-</html>
+
+        function renderContent() {
+            const container = document.getElementById('listsContainer');
+            container.innerHTML = '';
+
+            const filteredData = rawTravelData.filter(item => String(item.continent).trim() === currentContinent);
+            
+            if(filteredData.length === 0) {
+container.innerHTML = <div class="loading">✈️ 暂无 ${currentContinent} 的旅行足迹，快在表格里加上吧！</div>;return;}const countriesMap = {};filteredData.forEach(item => {const cName = item.country || '其他国家';if(!countriesMap[cName]) countriesMap[cName] = [];countriesMap[cName].push(item);});for (const country in countriesMap) {const geoGroup = document.createElement('div');geoGroup.className = 'geo-group';const title = document.createElement('div');title.className = 'country-title';title.innerText = country;geoGroup.appendChild(title);const grid = document.createElement('div');grid.className = 'attraction-grid';countriesMap[country].forEach(item => {const card = document.createElement('div');card.className = attraction-card ${item.completed ? 'done' : ''};card.onclick = () => toggleAttraction(item.id, !item.completed);card.innerHTML = <div class="card-banner" style="${item.image ?background-image: url('${item.image}'): ''}"> <span class="city-badge">${item.city || ''}</span> </div> <div class="card-body"> <span class="attraction-name">${item.attraction || ''}</span> <div class="checkbox-circle"></div> </div>;grid.appendChild(card);});geoGroup.appendChild(grid);container.appendChild(geoGroup);}}async function toggleAttraction(id, isChecked) {const target = rawTravelData.find(item => item.id === id);if(target) target.completed = isChecked;updateGlobalProgress();renderContent();try {await fetch(API_URL, {method: 'POST',mode: 'no-cors',headers: { 'Content-Type': 'application/json' },body: JSON.stringify({ id: id, completed: isChecked })});} catch (error) {console.error('云端数据同步失败:', error);}}fetchTravelData();
