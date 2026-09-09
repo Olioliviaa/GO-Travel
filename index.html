@@ -176,7 +176,7 @@
         @media(max-width: 600px) {
             .sidebar { width: 85px; }
             .menu-item { font-size: 13px; padding: 14px 4px; }
-            .main-content { padding-left: 100px; padding-top: 20px; padding-right: 12px; }
+            .main-content { padding-left: 105px; padding-top: 20px; padding-right: 12px; }
             header h1 { font-size: 20px; margin-bottom: 12px; }
             .attraction-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
             .card-banner { height: 95px; }
@@ -214,20 +214,15 @@
 
     <script>
         // 🛠️ 确保单引号中填入你最新生成的 Web 应用 API URL
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxsdzsQLz8PhLK3ewhR4gT22D4oMW9wrA5vBf-uYiNSZFD9CkofiAtSktiRrcScGOY/exec'; 
+        const API_URL = 'https://google.com'; 
 
         let rawTravelData = [];
         let currentContinent = '亚洲';
 
         async function fetchTravelData() {
             try {
-                // 向后端发请求
                 const response = await fetch(API_URL);
-                
-                // 🔥 绝杀修复点：放弃使用严格匹配的 .json() 接收，改成先捕获原生纯文本 (.text()) 
                 const textData = await response.text();
-                
-                // 再通过硬性解析转为标准 JavaScript 数组，完美跳过 Google 的内容协议限制
                 const data = JSON.parse(textData);
                 
                 if (Array.isArray(data)) {
@@ -239,24 +234,31 @@
                     document.getElementById('loading').innerText = '读取失败：返回的内容数据格式不正确。';
                 }
             } catch (error) {
-                document.getElementById('loading').innerText = '正在同步数据流中... (请确保表格左下角标签名为 Travel 且 A、B 列不为空)';
+                document.getElementById('loading').innerText = '正在同步数据流中... (请确保表格左下角标签名为 Travel 且有测试数据)';
                 console.error("解析错误：", error);
-                
-                // 彻底排查：如果 3 秒后依然因为未公开的权限而报错，强制启用最终保底应急数据
-                setTimeout(() => {
-                    if (rawTravelData.length === 0) {
-                        rawTravelData = [
-                            { id: 1, continent: "亚洲", country: "中国", city: "香港", attraction: "维多利亚港看夜景", image: "", completed: false },
-                            { id: 2, continent: "亚洲", country: "日本", city: "东京", attraction: "东京铁塔打卡", image: "", completed: false }
-                        ];
-                        document.getElementById('loading').style.display = 'none';
-                        updateGlobalProgress();
-                        renderContent();
-                    }
-                }, 1000);
             }
         }
 
         function updateGlobalProgress() {
             const total = rawTravelData.length;
-const completed = rawTravelData.filter(item => item.completed).length;document.getElementById('progressText').innerText = ${completed} / ${total};const percent = total > 0 ? (completed / total) * 100 : 0;document.getElementById('progress').style.width = ${percent}%;}function switchContinent(continentName) {currentContinent = continentName;document.getElementById('mainTitle').innerText = ${continentName} ｜ 我们的足迹;document.querySelectorAll('.menu-item').forEach(el => {if(el.innerText === continentName) el.classList.add('active');else el.classList.remove('active');});renderContent();}function renderContent() {const container = document.getElementById('listsContainer');container.innerHTML = '';const filteredData = rawTravelData.filter(item => String(item.continent).trim() === currentContinent);if(filteredData.length === 0) {container.innerHTML = <div class="loading">✈️ 暂无 ${currentContinent} 的旅行足迹，快在表格里加上吧！</div>;return;}const countriesMap = {};filteredData.forEach(item => {const cName = item.country || '其他国家';if(!countriesMap[cName]) countriesMap[cName] = [];countriesMap[cName].push(item);});for (const country in countriesMap) {const geoGroup = document.createElement('div');geoGroup.className = 'geo-group';const title = document.createElement('div');title.className = 'country-title';title.innerText = country;geoGroup.appendChild(title);const grid = document.createElement('div');grid.className = 'attraction-grid';countriesMap[country].forEach(item => {const card = document.createElement('div');card.className = attraction-card ${item.completed ? 'done' : ''};const bgStyle = item.image ? background-image: url('${item.image}') : '';card.onclick = () => toggleAttraction(item.id, !item.completed);card.innerHTML = <div class="card-banner" style="${bgStyle}"> <span class="city-badge">${item.city || ''}</span> </div> <div class="card-body"> <span class="attraction-name">${item.attraction || ''}</span> <div class="checkbox-circle"></div> </div>;grid.appendChild(card);});geoGroup.appendChild(grid);container.appendChild(geoGroup);}}async function toggleAttraction(id, isChecked) {const target = rawTravelData.find(item => item.id === id);if(target) target.completed = isChecked;updateGlobalProgress();renderContent();try {await fetch(API_URL, {method: 'POST',mode: 'no-cors',headers: { 'Content-Type': 'application/json' },body: JSON.stringify({ id: id, completed: isChecked })});} catch (error) {console.error('云端数据同步失败:', error);}}fetchTravelData();
+            const completed = rawTravelData.filter(item => item.completed).length;
+            document.getElementById('progressText').innerText = `${completed} / ${total}`;
+            const percent = total > 0 ? (completed / total) * 100 : 0;
+            document.getElementById('progress').style.width = `${percent}%`;
+        }
+
+        function switchContinent(continentName) {
+            currentContinent = continentName;
+            document.getElementById('mainTitle').innerText = `${continentName} ｜ 我们的足迹`;
+            document.querySelectorAll('.menu-item').forEach(el => {
+                if(el.innerText === continentName) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+            renderContent();
+        }
+
+        function renderContent() {
+            const container = document.getElementById('listsContainer');
+            container.innerHTML = '';
+
+const filteredData = rawTravelData.filter(item => String(item.continent).trim() === currentContinent);if(filteredData.length === 0) {container.innerHTML = <div class="loading">✈️ 暂无 ${currentContinent} 的旅行足迹，快在表格里加上吧！</div>;return;}const countriesMap = {};filteredData.forEach(item => {const cName = item.country || '其他国家';if(!countriesMap[cName]) countriesMap[cName] = [];countriesMap[cName].push(item);});for (const country in countriesMap) {const geoGroup = document.createElement('div');geoGroup.className = 'geo-group';const title = document.createElement('div');title.className = 'country-title';title.innerText = country;geoGroup.appendChild(title);const grid = document.createElement('div');grid.className = 'attraction-grid';countriesMap[country].forEach(item => {const card = document.createElement('div');card.className = attraction-card ${item.completed ? 'done' : ''};const bgStyle = item.image ? background-image: url('${item.image}') : '';card.onclick = () => toggleAttraction(item.id, !item.completed);card.innerHTML = <div class="card-banner" style="${bgStyle}"> <span class="city-badge">${item.city || ''}</span> </div> <div class="card-body"> <span class="attraction-name">${item.attraction || ''}</span> <div class="checkbox-circle"></div> </div>;grid.appendChild(card);});geoGroup.appendChild(grid);container.appendChild(geoGroup);}}async function toggleAttraction(id, isChecked) {const target = rawTravelData.find(item => item.id === id);if(target) target.completed = isChecked;updateGlobalProgress();renderContent();try {await fetch(API_URL, {method: 'POST',mode: 'no-cors',headers: { 'Content-Type': 'application/json' },body: JSON.stringify({ id: id, completed: isChecked })});} catch (error) {console.error('云端数据同步失败:', error);}}fetchTravelData();
