@@ -215,22 +215,22 @@
     </div>
 
     <script>
-        // 🛠️ 粘贴你刚刚重新部署好的包含 Travel 支持的 API URL
-        const API_URL = 'https://script.google.com/macros/s/AKfycbwyUphb9znyJpMYyG3HVQHqXEgDhKxa1AxS_DwqmQ3mUO5CU3tFuo_pckHvOsdVvfFg/exec'; 
+        // 🛠️ 已经自动填入你专属的后端执行 URL
+        const API_URL = 'https://google.com'; 
 
         let rawTravelData = [];
         let currentContinent = '亚洲';
 
+        // 🛠️ 关键修复：完全移除 URL 后缀的参数拼接，直接走干净的跨域 GET 请求
         async function fetchTravelData() {
             try {
-                // 带上 ?type=travel 参数告诉后端我们要读取旅游数据
-                const response = await fetch(`${API_URL}?type=travel`);
+                const response = await fetch(API_URL);
                 rawTravelData = await response.json();
                 document.getElementById('loading').style.display = 'none';
                 updateGlobalProgress();
                 renderContent();
             } catch (error) {
-                document.getElementById('loading').innerText = '数据加载异常，请检查后端配置。';
+                document.getElementById('loading').innerText = '数据加载异常，请检查后端发布状态。';
                 console.error(error);
             }
         }
@@ -245,7 +245,6 @@
 
         function switchContinent(continentName) {
             currentContinent = continentName;
-            // 切换 Sidebar 激活状态
             document.querySelectorAll('.menu-item').forEach(el => {
                 if(el.innerText === continentName) el.classList.add('active');
                 else el.classList.remove('active');
@@ -257,8 +256,7 @@
             const container = document.getElementById('listsContainer');
             container.innerHTML = '';
 
-            // 1. 过滤当前选中的大洲数据
             const filteredData = rawTravelData.filter(item => item.continent === currentContinent);
             
             if(filteredData.length === 0) {
-container.innerHTML = <div class="loading">✈️ 暂无 ${currentContinent} 的旅行打卡计划，快去表格里添加吧！</div>;return;}// 2. 按国家对数据进行归类分组const countriesMap = {};filteredData.forEach(item => {if(!countriesMap[item.country]) countriesMap[item.country] = [];countriesMap[item.country].push(item);});// 3. 开始渲染国家和景点卡片for (const country in countriesMap) {const geoGroup = document.createElement('div');geoGroup.className = 'geo-group';const title = document.createElement('div');title.className = 'country-title';title.innerText = country;geoGroup.appendChild(title);const grid = document.createElement('div');grid.className = 'attraction-grid';countriesMap[country].forEach(item => {const card = document.createElement('div');card.className = attraction-card ${item.completed ? 'done' : ''};// 设置封面图，如果没有则自动采用高质感 GO 风格渐变色const bgStyle = item.image ? background-image: url('${item.image}') : '';card.onclick = () => toggleAttraction(item.id, !item.completed);card.innerHTML = <div class="card-banner" style="${bgStyle}"> <span class="city-badge">${item.city}</span> </div> <div class="card-body"> <span class="attraction-name">${item.attraction}</span> <div class="checkbox-circle"></div> </div>;grid.appendChild(card);});geoGroup.appendChild(grid);container.appendChild(geoGroup);}}async function toggleAttraction(id, isChecked) {const target = rawTravelData.find(item => item.id === id);if(target) target.completed = isChecked;updateGlobalProgress();renderContent();try {await fetch(API_URL, {method: 'POST',mode: 'no-cors',headers: { 'Content-Type': 'application/json' },body: JSON.stringify({ id: id, completed: isChecked, type: 'travel' })});} catch (error) {console.error('云端数据同步失败:', error);}}fetchTravelData();
+                container.innerHTML = `<div class="loading">✈️ 暂无 ${currentContinent} 的旅行打卡计划，快去表格里添加吧！</div>`;
