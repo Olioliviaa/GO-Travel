@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的世界足迹｜GO-Travel</title>
+    <style>
+        :root {
+            --primary-color: #3AA1FF; 
+            --accent-color: #FFDE00;  
+            --bg-gradient: linear-gradient(135deg, #F0F4F8 0%, #E2E8F0 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #2D3748;
+            --text-muted: #A0AEC0;
+            --sidebar-width: 140px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background: var(--bg-gradient); 
+            color: var(--text-main); 
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 🗺️ 左侧固定侧边栏：参考 GO-Menu/Guide */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 0;
+            z-index: 10;
+        }
+
+        .logo-area {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .menu-item {
+            padding: 14px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #718096;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+            margin-bottom: 4px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            color: var(--primary-color);
+            background: rgba(58, 161, 255, 0.08);
+            border-left-color: var(--primary-color);
+        }
+
+        /* 🏛️ 右侧主干内容区 */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 40px 30px;
+            max-width: 1000px;
+        }
+
+        header h1 { font-size: 26px; font-weight: 800; margin-bottom: 20px; }
+
+        /* 📊 顶部大进度条 */
+        .progress-container {
+            background: var(--card-bg);
+            padding: 16px 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(148, 163, 184, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            margin-bottom: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; font-weight: 700;}
+        .progress-bar { width: 100%; background: #E2E8F0; height: 12px; border-radius: 99px; overflow: hidden; }
+        .progress { height: 100%; background: linear-gradient(90deg, var(--primary-color) 0%, #63B3ED 100%); width: 0%; border-radius: 99px; transition: width 0.4s ease; }
+
+        /* 🗺️ 国家与城市的分组标题 */
+        .geo-group { margin-bottom: 35px; }
+        .country-title { font-size: 20px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;}
+        .country-title::before { content: '📍'; font-size: 16px; }
+        
+        /* 🃏 景点卡片网格系统 */
+        .attraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .attraction-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(148, 163, 184, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .attraction-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(148, 163, 184, 0.15);
+        }
+
+        /* 🖼️ 卡片封面图或优雅纯色渐变占位 */
+        .card-banner {
+            height: 140px;
+            width: 100%;
+            background: linear-gradient(45deg, #A0C4FF, #C1Y5FF);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .city-badge {
+            position: absolute;
+            bottom: 12px; left: 12px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: white; padding: 4px 10px;
+            border-radius: 8px; font-size: 11px; font-weight: 700;
+        }
+
+        .card-body {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .attraction-name { font-size: 15px; font-weight: 700; color: var(--text-main); }
+
+        /* 🔘 自定义GO复选框 */
+        .checkbox-circle {
+            width: 24px; height: 24px;
+            border: 2px solid #CBD5E1;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+            background: #fff;
+        }
+        .attraction-card.done .checkbox-circle {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .checkbox-circle::after {
+            content: ''; width: 5px; height: 9px;
+            border: solid white; border-width: 0 2px 2px 0;
+            transform: rotate(45deg); display: none; margin-top: -2px;
+        }
+        .attraction-card.done .checkbox-circle::after { display: block; }
+        .attraction-card.done .card-banner { filter: grayscale(0.4); opacity: 0.7; }
+        .attraction-card.done .attraction-name { text-decoration: line-through; color: var(--text-muted); }
+
+        .loading { text-align: center; font-size: 15px; font-weight: 600; color: var(--text-muted); padding: 100px 0; }
+        
+        @media(max-width: 600px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; overflow-x: auto; padding: 10px; }
+            .logo-area { display: none; }
+            .menu-item { padding: 8px 16px; white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; }
+            .menu-item:hover, .menu-item.active { border-left-color: transparent; border-bottom-color: var(--primary-color); }
+            .main-content { margin-left: 0; padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🗺️ 左侧大洲侧边栏 -->
+    <div class="sidebar">
+        <div class="logo-area">GO-Travel</div>
+        <div class="menu-item active" onclick="switchContinent('亚洲')">亚洲</div>
+        <div class="menu-item" onclick="switchContinent('欧洲')">欧洲</div>
+        <div class="menu-item" onclick="switchContinent('北美洲')">北美洲</div>
+        <div class="menu-item" onclick="switchContinent('南美洲')">南美洲</div>
+        <div class="menu-item" onclick="switchContinent('大洋洲')">大洋洲</div>
+        <div class="menu-item" onclick="switchContinent('非洲')">非洲</div>
+        <div class="menu-item" onclick="switchContinent('南极洲')">南极洲</div>
+    </div>
+
+    <!-- 🏛️ 右侧打卡主体区 -->
+    <div class="main-content">
+        <header>
+            <h1>我们的足迹地图</h1>
+        </header>
+
+        <div class="progress-container">
+            <div class="progress-header">
+                <span>全球打卡进度</span>
+                <span id="progressText">0 / 0</span>
+            </div>
+            <div class="progress-bar"><div class="progress" id="progress"></div></div>
+        </div>
+
+        <div id="loading" class="loading">正在同步 GO-Travel Database...</div>
+        <div id="listsContainer"></div>
+    </div>
+
+    <script>
+        // 🛠️ 粘贴你刚刚重新部署好的包含 Travel 支持的 API URL
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwyUphb9znyJpMYyG3HVQHqXEgDhKxa1AxS_DwqmQ3mUO5CU3tFuo_pckHvOsdVvfFg/exec'; 
+
+        let rawTravelData = [];
+        let currentContinent = '亚洲';
+
+        async function fetchTravelData() {
+            try {
+                // 带上 ?type=travel 参数告诉后端我们要读取旅游数据
+                const response = await fetch(`${API_URL}?type=travel`);
+                rawTravelData = await response.json();
+                document.getElementById('loading').style.display = 'none';
+                updateGlobalProgress();
+                renderContent();
+            } catch (error) {
+                document.getElementById('loading').innerText = '数据加载异常，请检查后端配置。';
+                console.error(error);
+            }
+        }
+
+        function updateGlobalProgress() {
+            const total = rawTravelData.length;
+            const completed = rawTravelData.filter(item => item.completed).length;
+            document.getElementById('progressText').innerText = `${completed} / ${total}`;
+            const percent = total > 0 ? (completed / total) * 100 : 0;
+            document.getElementById('progress').style.width = `${percent}%`;
+        }
+
+        function switchContinent(continentName) {
+            currentContinent = continentName;
+            // 切换 Sidebar 激活状态
+            document.querySelectorAll('.menu-item').forEach(el => {
+                if(el.innerText === continentName) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+            renderContent();
+        }
+
+        function renderContent() {
+            const container = document.getElementById('listsContainer');
+            container.innerHTML = '';
+
+            // 1. 过滤当前选中的大洲数据
+            const filteredData = rawTravelData.filter(item => item.continent === currentContinent);
+            
+            if(filteredData.length === 0) {
+container.innerHTML = <div class="loading">✈️ 暂无 ${currentContinent} 的旅行打卡计划，快去表格里添加吧！</div>;return;}// 2. 按国家对数据进行归类分组const countriesMap = {};filteredData.forEach(item => {if(!countriesMap[item.country]) countriesMap[item.country] = [];countriesMap[item.country].push(item);});// 3. 开始渲染国家和景点卡片for (const country in countriesMap) {const geoGroup = document.createElement('div');geoGroup.className = 'geo-group';const title = document.createElement('div');title.className = 'country-title';title.innerText = country;geoGroup.appendChild(title);const grid = document.createElement('div');grid.className = 'attraction-grid';countriesMap[country].forEach(item => {const card = document.createElement('div');card.className = attraction-card ${item.completed ? 'done' : ''};// 设置封面图，如果没有则自动采用高质感 GO 风格渐变色const bgStyle = item.image ? background-image: url('${item.image}') : '';card.onclick = () => toggleAttraction(item.id, !item.completed);card.innerHTML = <div class="card-banner" style="${bgStyle}"> <span class="city-badge">${item.city}</span> </div> <div class="card-body"> <span class="attraction-name">${item.attraction}</span> <div class="checkbox-circle"></div> </div>;grid.appendChild(card);});geoGroup.appendChild(grid);container.appendChild(geoGroup);}}async function toggleAttraction(id, isChecked) {const target = rawTravelData.find(item => item.id === id);if(target) target.completed = isChecked;updateGlobalProgress();renderContent();try {await fetch(API_URL, {method: 'POST',mode: 'no-cors',headers: { 'Content-Type': 'application/json' },body: JSON.stringify({ id: id, completed: isChecked, type: 'travel' })});} catch (error) {console.error('云端数据同步失败:', error);}}fetchTravelData();
