@@ -191,7 +191,7 @@
 
     <div class="main-content">
         <header>
-            <h1 id="mainTitle">我们的世界足迹｜亚洲</h1>
+            <h1 id="mainTitle">世界足迹｜亚洲</h1>
         </header>
 
         <div class="progress-container">
@@ -242,7 +242,7 @@
 
         function switchContinent(continentName) {
             currentContinent = continentName;
-            document.getElementById('mainTitle').innerText = `我们的世界足迹｜${continentName}`;
+            document.getElementById('mainTitle').innerText = `世界足迹｜${continentName}`;
             document.querySelectorAll('.menu-item').forEach(el => {
                 el.classList.toggle('active', el.innerText === continentName);
             });
